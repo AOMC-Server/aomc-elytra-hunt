@@ -167,10 +167,11 @@
               <button id="submitLooted" type="button">Submit looted for everyone</button>
             </div>
             <p id="submitNote" class="hint"></p>
+            <p class="hint">Not going through? <button id="submitGithub" type="button" class="textlink">Post it on GitHub</button> yourself.</p>
           </div>
           <p id="submitFallback" class="hint aomc-only">
             Press <em>Export looted</em> and attach the file to
-            <a href="https://github.com/AOMC-Server/aomc-elytra-hunt/issues/new?title=Looted%20cities&amp;body=Attach%20your%20exported%20end-cities-looted.csv%20file%20here." target="_blank" rel="noopener">a new GitHub issue</a>.
+            <a href="https://github.com/AOMC-Server/aomc-elytra-hunt/issues/new?template=looted.md&amp;title=Looted%20cities&amp;body=Attach%20your%20exported%20end-cities-looted.csv%20file%20here." target="_blank" rel="noopener">a new GitHub issue</a>.
           </p>
           <p id="sharedNote" class="hint aomc-only"></p>
         </div>
@@ -222,6 +223,7 @@
             <input id="reportName" autocomplete="off" spellcheck="false" maxlength="16" placeholder="Optional" />
           </label>
           <p class="hint">Reports are reviewed before anything changes for other players.</p>
+          <p class="hint">Not going through? <button id="reportGithub" type="button" class="textlink">Post it on GitHub</button> yourself.</p>
           <div class="row">
             <button type="submit" class="primary">Send report</button>
             <button id="reportCancel" type="button">Cancel</button>

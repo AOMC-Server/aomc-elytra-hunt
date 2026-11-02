@@ -39,6 +39,9 @@ in the same change, so there is still only one way to do each thing.
   background); a button stands out from it (lighter). The panel's main action
   is outlined in the accent colour over a faint wash of it, never a solid
   block.
+- **Small fallbacks:** a way round a control that is not working is a
+  `button.textlink` inside a hint under it ("Not going through? Post it on
+  GitHub yourself."), never a second full button.
 - **Destructive actions:** `button.danger`, on a line of its own under a rule,
   with a hint saying what is lost. Its confirmation says it cannot be undone.
 - **Colours:** only the variables at the top of `src/style.css`.

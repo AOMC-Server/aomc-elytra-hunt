@@ -151,7 +151,10 @@ end. Ships within 1,000 blocks of it count as possibly looted.
   once accepted they show as looted for all players. The username is
   optional: give one and the map shows it beside your ships ("Looted by
   Steve_01"); leave it empty and they just say "Looted". **Export looted** and
-  **Import looted** move them between browsers or friends.
+  **Import looted** move them between browsers or friends. If sending does
+  not go through, **Post it on GitHub** copies your list and opens a new GitHub
+  issue to paste it into (this needs a GitHub account). The report window has
+  the same link.
 - **Reports:** right-click a ship and choose **Report incorrect…** if it has no
   ship, there is no city, or a doubtful ship was there after all. Accepted
   reports apply to everyone.

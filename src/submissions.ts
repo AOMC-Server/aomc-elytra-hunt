@@ -1,8 +1,10 @@
 // What players send in for the maintainer to review: reports on whether a ship was where the app
 // shows it, and their looted lists. Both go to the relay in relay/, which files them as GitHub issues.
 
+import { issueFor, issueForShip, parseShipReport, parseSubmission, type ShipResult } from '../relay/src/validate';
 import { $, fmt, xzText } from './dom';
 import { cleanUsername } from './journeymap';
+import { copyText } from './route-panel';
 import { DEFAULT_SEED, onUsername, setUsername, state } from './state';
 import type { Tracker } from './tracker';
 import { cityId, type City } from './types';
@@ -24,6 +26,18 @@ export async function loadShipReports(): Promise<{ missing?: string[]; found?: s
   }
 }
 
+/**
+ * A new GitHub issue from one of the templates in .github/ISSUE_TEMPLATE. The template adds the label
+ * that /merge looks for, which players who are not collaborators cannot add themselves.
+ */
+function newIssueUrl(template: string, issue: { title: string; body: string }): string {
+  const url = (body: string) =>
+    `${ISSUES_URL}/new?template=${template}&title=${encodeURIComponent(issue.title)}&body=${encodeURIComponent(body)}`;
+  // GitHub turns away very long addresses: a long list has to be pasted in instead.
+  const full = url(issue.body);
+  return full.length <= 8000 ? full : url('Paste here what the app copied.');
+}
+
 /** What these need from the rest of the app. */
 export interface SubmissionsHost {
   tracker(): Tracker;
@@ -37,12 +51,9 @@ export function initSubmissions(host: SubmissionsHost): { openReport(city: City,
   const wasUncertain = (city: City) => state.found.some((c) => c[0] === city.x && c[1] === city.z && c[2] === 2);
 
   /** Send a player's report on whether a city's ship was there, for the maintainer to review. */
-  async function reportShip(city: City, result: 'found' | 'missing' | 'no-city'): Promise<void> {
-    const where = xzText(city);
+  async function reportShip(city: City, result: ShipResult): Promise<void> {
     if (!SUBMIT_URL) {
-      // Without the relay, the report is filed by hand as a GitHub issue.
-      const headline = { found: 'ship found', missing: 'no ship', 'no-city': 'no End City' }[result];
-      window.open(`${ISSUES_URL}/new?title=${encodeURIComponent(`Ship report: ${headline} at ${where}`)}`, '_blank', 'noopener');
+      reportOnGithub(city, result);
       return;
     }
     mapNote.textContent = 'Sending your report…';
@@ -64,6 +75,12 @@ export function initSubmissions(host: SubmissionsHost): { openReport(city: City,
     } catch {
       mapNote.textContent = 'Could not reach the report service. Please try again later.';
     }
+  }
+
+  /** File a report by hand as a GitHub issue, already filled in: for when the relay is down or not set up. */
+  function reportOnGithub(city: City, result: ShipResult): void {
+    const parsed = parseShipReport({ kind: 'ship', city: cityId(city), result, name: state.chatName, uncertain: wasUncertain(city) });
+    if (parsed.ok) window.open(newIssueUrl('ship-report.md', issueForShip(parsed.value)), '_blank', 'noopener');
   }
 
   // The little window for a report: pick what was found, give a username, then send.
@@ -105,6 +122,13 @@ export function initSubmissions(host: SubmissionsHost): { openReport(city: City,
     closeReport();
     if (city && (kind === 'missing' || kind === 'no-city' || kind === 'found')) void reportShip(city, kind);
   });
+  $('reportGithub').addEventListener('click', () => {
+    const city = reportCity;
+    const kind = new FormData(reportForm).get('reportKind');
+    setUsername(reportName.value);
+    closeReport();
+    if (city && (kind === 'missing' || kind === 'no-city' || kind === 'found')) reportOnGithub(city, kind);
+  });
 
   // Sending in the looted list.
   const submitName = $<HTMLInputElement>('submitName');
@@ -122,17 +146,25 @@ export function initSubmissions(host: SubmissionsHost): { openReport(city: City,
     if (document.activeElement !== submitName) submitName.value = state.chatName;
   });
 
-  submitBtn.addEventListener('click', async () => {
+  /** The player's looted cities to send, or null (with the reason shown) when there is nothing to send. */
+  function toSubmit(): { cities: string[]; already: string[] } | null {
     if (state.seed !== DEFAULT_SEED) {
       submitNote.textContent = 'The shared list is only for the default server seed.';
-      return;
+      return null;
     }
     const already = host.tracker().ownAlready();
     const cities = [...new Set([...host.tracker().ownNew(), ...already])];
     if (!cities.length) {
       submitNote.textContent = 'Nothing new to submit: mark some ships as looted first.';
-      return;
+      return null;
     }
+    return { cities, already };
+  }
+
+  submitBtn.addEventListener('click', async () => {
+    const sending = toSubmit();
+    if (!sending) return;
+    const { cities, already } = sending;
     if (!confirm(`Send ${fmt(cities.length)} looted ${cities.length === 1 ? 'ship' : 'ships'} for review? Once accepted they show as looted for everyone.`)) return;
     submitBtn.disabled = true;
     submitNote.textContent = 'Sending…';
@@ -151,6 +183,24 @@ export function initSubmissions(host: SubmissionsHost): { openReport(city: City,
     } finally {
       submitBtn.disabled = false;
     }
+  });
+
+  // The same list, filed by hand: copied, so it can be pasted into a GitHub issue however long it is.
+  $('submitGithub').addEventListener('click', async () => {
+    const sending = toSubmit();
+    if (!sending) return;
+    const parsed = parseSubmission({ name: submitName.value, ...sending });
+    if (!parsed.ok) {
+      submitNote.textContent = parsed.error;
+      return;
+    }
+    const issue = issueFor(parsed.value);
+    if (!(await copyText(issue.body))) {
+      submitNote.textContent = 'Could not copy. Press Export looted and attach the file to a GitHub issue instead.';
+      return;
+    }
+    submitNote.textContent = 'Copied. If GitHub did not open in a new tab, open a new issue there and paste it in.';
+    window.open(newIssueUrl('looted.md', issue), '_blank', 'noopener');
   });
 
   return { openReport };
