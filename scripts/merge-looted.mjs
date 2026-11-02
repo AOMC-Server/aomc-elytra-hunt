@@ -16,7 +16,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const FILE = 'public/looted.json';
-const REPO = 'sh4sh/aomc-elytra-hunt';
+const REPO = 'AOMC-Server/aomc-elytra-hunt';
 const namesOnly = process.argv.includes('--names-only');
 // --no-name adds the cities without recording who sent them.
 const noName = process.argv.includes('--no-name');

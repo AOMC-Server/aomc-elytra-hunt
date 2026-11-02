@@ -23,6 +23,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ github.event.issue.number }}
-          OWNER: ${{ github.repository_owner }}
+          OWNER: sh4sh
         run: |
           gh issue comment "$NUMBER" --body "@$OWNER a player sent this from the app. To accept it, reply to this issue with \`/merge\`: that applies it, updates the site and closes the issue. To reject it, just close the issue."

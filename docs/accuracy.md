@@ -86,7 +86,7 @@ A player reported a city with no ship at x: -554792, z: 8712, where the app and
 cubiomes both predicted one. A single-player world with the server's seed (Java
 26.2) showed the same, so the cause was in the prediction, not on the server.
 Cities were then checked one by one in that world
-([issue #11](https://github.com/sh4sh/aomc-elytra-hunt/issues/11)):
+([issue #11](https://github.com/AOMC-Server/aomc-elytra-hunt/issues/11)):
 
 | City | cubiomes as published | App now | In game |
 |---|---|---|---|

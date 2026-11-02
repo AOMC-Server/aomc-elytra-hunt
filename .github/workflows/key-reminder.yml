@@ -20,7 +20,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      OWNER: ${{ github.repository_owner }}
+      OWNER: sh4sh
       TITLE: Renew the relay's keys before 31 December
     steps:
       - name: Open or bump the reminder

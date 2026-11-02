@@ -7,7 +7,7 @@ import { DEFAULT_SEED, onUsername, setUsername, state } from './state';
 import type { Tracker } from './tracker';
 import { cityId, type City } from './types';
 
-export const ISSUES_URL = 'https://github.com/sh4sh/aomc-elytra-hunt/issues';
+export const ISSUES_URL = 'https://github.com/AOMC-Server/aomc-elytra-hunt/issues';
 /**
  * Address of the relay that files looted-city submissions as GitHub issues (see relay/README.md).
  * While empty, the Submit button is hidden and players are pointed at GitHub instead.

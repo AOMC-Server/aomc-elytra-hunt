@@ -3,8 +3,8 @@ main = "src/index.ts"
 compatibility_date = "2026-01-01"
 
 [vars]
-REPO = "sh4sh/aomc-elytra-hunt"
-ALLOWED_ORIGIN = "https://sh4sh.github.io"
+REPO = "AOMC-Server/aomc-elytra-hunt"
+ALLOWED_ORIGIN = "https://aomc-server.github.io"
 WORKFLOW = "update-webmap.yml"
 
 # Once an hour, start the webmap update workflow on GitHub.

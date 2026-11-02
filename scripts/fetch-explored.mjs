@@ -32,7 +32,7 @@ const COARSE_REACH = 4;
 const MAPPED_MIN = 4;
 /** Pause between requests, in milliseconds. */
 const PAUSE = 500;
-const USER_AGENT = 'aomc-elytra-hunt explored-area updater (+https://github.com/sh4sh/aomc-elytra-hunt)';
+const USER_AGENT = 'aomc-elytra-hunt explored-area updater (+https://github.com/AOMC-Server/aomc-elytra-hunt)';
 
 const full = process.argv.includes('--full');
 /** Hour of the day (UTC) at which a routine run also looks at regions that were empty last time. */

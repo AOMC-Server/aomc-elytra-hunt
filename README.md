@@ -2,7 +2,7 @@
 
 Find Elytra on the About Oliver Minecraft Server.
 
-**Use it here: https://sh4sh.github.io/aomc-elytra-hunt/**
+**Use it here: https://aomc-server.github.io/aomc-elytra-hunt/**
 
 A web app for hunting elytra on a Minecraft Java server. It works out where
 every End City with a ship is from the world seed, and groups them into routes

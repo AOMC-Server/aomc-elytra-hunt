@@ -17,7 +17,7 @@ interface Env {
   GITHUB_TOKEN: string;
   /** owner/name of the repository to file issues in. */
   REPO: string;
-  /** The site allowed to call this relay, e.g. https://sh4sh.github.io */
+  /** The site allowed to call this relay, e.g. https://aomc-server.github.io */
   ALLOWED_ORIGIN: string;
   /** File name of the workflow to start on the timer. */
   WORKFLOW: string;

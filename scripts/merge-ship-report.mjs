@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const FILE = 'public/ship-reports.json';
-const REPO = 'sh4sh/aomc-elytra-hunt';
+const REPO = 'AOMC-Server/aomc-elytra-hunt';
 const args = process.argv.slice(2);
 
 /** [kind, "x,z"] pairs to record. */

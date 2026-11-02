@@ -4,7 +4,7 @@
 
 /** The latest finished runs of the job that checks the webmap for changes, as GitHub reports them to anyone. */
 export const WEBMAP_CHECKS_URL =
-  'https://api.github.com/repos/sh4sh/aomc-elytra-hunt/actions/workflows/update-webmap.yml/runs?status=success&per_page=1';
+  'https://api.github.com/repos/AOMC-Server/aomc-elytra-hunt/actions/workflows/update-webmap.yml/runs?status=success&per_page=1';
 /**
  * Most ship cities one search may bring in. Batching and drawing slow down with every city, and beyond
  * this the page would hang for many seconds, so a wider search is refused with advice to narrow it.
