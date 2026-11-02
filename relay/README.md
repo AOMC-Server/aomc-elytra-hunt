@@ -119,6 +119,8 @@ the repository. List them with
 - At most 30 issues an hour and 100 a day in total, whoever sends them
   (`MAX_PER_HOUR` and `MAX_PER_DAY` in `src/validate.ts`). The relay counts
   its own recent issues on GitHub before filing another, so the cap holds
-  across all of Cloudflare's locations and needs no extra storage. Once it is
+  across all of Cloudflare's locations and needs no extra storage. Only issues
+  filed under its token's account count, so issues players post on GitHub by
+  hand do not use it up. Once it is
   reached, players are asked to try again later.
 - Only coordinates and a username-like name are accepted; no free text.

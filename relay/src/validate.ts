@@ -115,7 +115,8 @@ export const MAX_PER_DAY = 100;
 
 /**
  * Whether the relay has filed as many issues as it will for now. `issues` are the repository's most
- * recently created issues, as GitHub lists them; only the relay's own (by label) are counted.
+ * recently created issues by the relay's own account, as GitHub lists them; of those, only the ones
+ * labelled as submissions are counted, not anything else the maintainer files with the same token's account.
  */
 export function overCap(issues: { created_at: string; labels: ({ name?: string } | string)[] }[], now: number): 'hour' | 'day' | null {
   const ours = issues.filter((i) =>

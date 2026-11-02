@@ -29,6 +29,15 @@ const COOLDOWN_SECONDS = 60;
 /** A ship report is one click, and a player may have several to make. */
 const SHIP_COOLDOWN_SECONDS = 10;
 
+/** The GitHub account the token files issues as, looked up once per worker. */
+let tokenLogin: string | null = null;
+async function relayLogin(github: Record<string, string>): Promise<string | null> {
+  if (tokenLogin) return tokenLogin;
+  const res = await fetch('https://api.github.com/user', { headers: github });
+  if (res.ok) tokenLogin = ((await res.json()) as { login: string }).login;
+  return tokenLogin;
+}
+
 /** Ask GitHub to run the webmap update workflow now. */
 async function startWebmapUpdate(env: Env): Promise<void> {
   const res = await fetch(`https://api.github.com/repos/${env.REPO}/actions/workflows/${env.WORKFLOW}/dispatches`, {
@@ -96,17 +105,21 @@ export default {
 
     // A cap on everything the relay files, whoever sends it, so that many addresses at once cannot
     // flood the repository either. The count comes from GitHub itself: the issues are the record.
+    // Only the relay's own issues count, so players posting on GitHub by hand cannot use up the cap.
     const github = {
       Authorization: `Bearer ${env.GITHUB_TOKEN}`,
       Accept: 'application/vnd.github+json',
       'User-Agent': 'aomc-looted-relay',
     };
-    const recent = await fetch(
-      `https://api.github.com/repos/${env.REPO}/issues?state=all&sort=created&direction=desc&per_page=100`,
-      { headers: github },
-    );
+    const login = await relayLogin(github);
+    const recent = login
+      ? await fetch(
+          `https://api.github.com/repos/${env.REPO}/issues?state=all&sort=created&direction=desc&per_page=100&creator=${encodeURIComponent(login)}`,
+          { headers: github },
+        )
+      : null;
     // If the count cannot be had, nothing is filed: better to turn a player away than to lose the cap.
-    if (!recent.ok) return reply(502, { error: 'Could not file the submission. Please try again later.' });
+    if (!recent?.ok) return reply(502, { error: 'Could not file the submission. Please try again later.' });
     const capped = overCap((await recent.json()) as Parameters<typeof overCap>[0], Date.now());
     if (capped) {
       console.log(`Over the ${capped} cap: turned a submission away`);
